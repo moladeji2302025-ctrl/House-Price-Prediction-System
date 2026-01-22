@@ -1,0 +1,59 @@
+House Price Prediction System - Submission Details
+==================================================
+
+Author Details:
+--------------
+Project: House Price Prediction System
+Implementation Date: January 2026
+
+Machine Learning Algorithm Used:
+--------------------------------
+Algorithm: Linear Regression
+Library: scikit-learn
+Features Used: 6 features (OverallQual, GrLivArea, TotalBsmtSF, GarageCars, GarageArea, YearBuilt)
+
+Model Persistence Method:
+------------------------
+Method: Pickle (Python's built-in serialization)
+File: model/house_price_model.pkl
+Components Saved: Model, Scaler, Feature Columns
+
+Live URL of Hosted Application:
+-------------------------------
+[To be updated after Vercel deployment]
+Deployment Platform: Vercel
+
+GitHub Repository:
+-----------------
+Repository: https://github.com/moladeji2302025-ctrl/House-Price-Prediction-System
+
+Project Structure:
+-----------------
+/model/ - Contains model_building.ipynb and house_price_model.pkl
+/templates/ - Contains index.html
+/static/ - (Optional) For additional CSS/JS files
+app.py - Flask web application
+requirements.txt - Python dependencies
+vercel.json - Vercel deployment configuration
+
+Model Performance Metrics:
+-------------------------
+The model is evaluated using:
+- MAE (Mean Absolute Error)
+- MSE (Mean Squared Error)
+- RMSE (Root Mean Squared Error)
+- R² Score
+
+Deployment Instructions:
+-----------------------
+1. Install Vercel CLI: npm install -g vercel
+2. Login to Vercel: vercel login
+3. Deploy: vercel --prod
+4. Update the live URL in this file
+
+Local Testing:
+-------------
+1. Install dependencies: pip install -r requirements.txt
+2. Train the model: python model/model_development.py
+3. Run the app: python app.py
+4. Access at: http://localhost:5000
