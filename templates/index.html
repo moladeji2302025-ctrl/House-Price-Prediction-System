@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Prediction System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .result h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .result .price {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .result .details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: #555;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fee;
+            border: 1px solid #fcc;
+            border-radius: 8px;
+            color: #c33;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info-section ul {
+            list-style-position: inside;
+            color: #666;
+        }
+
+        .info-section li {
+            padding: 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .result .price {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏠 House Price Prediction</h1>
+            <p>Get an instant estimate of your house value using Machine Learning</p>
+        </div>
+
+        <div class="content">
+            <div class="info-section">
+                <h3>How it works:</h3>
+                <ul>
+                    <li>Enter the details of your house in the form below</li>
+                    <li>Our ML model analyzes 6 key features</li>
+                    <li>Get an instant price prediction based on trained data</li>
+                </ul>
+            </div>
+
+            <form method="POST" action="/predict">
+                <div class="form-group">
+                    <label for="OverallQual">Overall Quality (1-10)</label>
+                    <input type="number" id="OverallQual" name="OverallQual" 
+                           min="1" max="10" step="1" 
+                           value="{{ input_values.OverallQual if input_values else 7 }}" 
+                           required>
+                    <small>Rate the overall material and finish quality (1=Poor, 10=Excellent)</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="GrLivArea">Living Area (sq ft)</label>
+                    <input type="number" id="GrLivArea" name="GrLivArea" 
+                           min="300" max="10000" step="1" 
+                           value="{{ input_values.GrLivArea if input_values else 2000 }}" 
+                           required>
+                    <small>Above grade (ground) living area in square feet</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="TotalBsmtSF">Basement Area (sq ft)</label>
+                    <input type="number" id="TotalBsmtSF" name="TotalBsmtSF" 
+                           min="0" max="6000" step="1" 
+                           value="{{ input_values.TotalBsmtSF if input_values else 1000 }}" 
+                           required>
+                    <small>Total square feet of basement area</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="GarageCars">Garage Capacity (cars)</label>
+                    <input type="number" id="GarageCars" name="GarageCars" 
+                           min="0" max="5" step="1" 
+                           value="{{ input_values.GarageCars if input_values else 2 }}" 
+                           required>
+                    <small>Size of garage in car capacity</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="GarageArea">Garage Area (sq ft)</label>
+                    <input type="number" id="GarageArea" name="GarageArea" 
+                           min="0" max="1500" step="1" 
+                           value="{{ input_values.GarageArea if input_values else 500 }}" 
+                           required>
+                    <small>Size of garage in square feet</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="YearBuilt">Year Built</label>
+                    <input type="number" id="YearBuilt" name="YearBuilt" 
+                           min="1800" max="2024" step="1" 
+                           value="{{ input_values.YearBuilt if input_values else 2010 }}" 
+                           required>
+                    <small>Original construction year</small>
+                </div>
+
+                <button type="submit" class="btn">Predict House Price</button>
+            </form>
+
+            {% if prediction %}
+            <div class="result">
+                <h2>Predicted House Price</h2>
+                <div class="price">${{ "%.2f"|format(prediction)|replace(",", "") }}</div>
+                <div class="details">
+                    <h3 style="margin-bottom: 15px;">Input Details:</h3>
+                    {% if input_values %}
+                    <div class="detail-item">
+                        <span>Overall Quality:</span>
+                        <strong>{{ input_values.OverallQual }}</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Living Area:</span>
+                        <strong>{{ input_values.GrLivArea }} sq ft</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Basement Area:</span>
+                        <strong>{{ input_values.TotalBsmtSF }} sq ft</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Garage Capacity:</span>
+                        <strong>{{ input_values.GarageCars }} cars</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Garage Area:</span>
+                        <strong>{{ input_values.GarageArea }} sq ft</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Year Built:</span>
+                        <strong>{{ input_values.YearBuilt }}</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="error">
+                <strong>Error:</strong> {{ error }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
