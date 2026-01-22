@@ -6,6 +6,7 @@ that can be used for prediction without requiring the full scikit-learn library.
 import numpy as np
 import json
 import os
+import pickle
 
 
 class LightweightScaler:
@@ -49,6 +50,9 @@ class LightweightLinearRegression:
             raise ValueError("Model not initialized with coefficients and intercept")
         
         X = np.array(X)
+        # Handle single sample (1D array) by reshaping to 2D
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
         return np.dot(X, self.coef_) + self.intercept_
     
     def to_dict(self):
@@ -110,8 +114,6 @@ def convert_sklearn_model_to_lightweight(sklearn_model_path, output_path):
         sklearn_model_path: Path to the pickled scikit-learn model
         output_path: Path to save the lightweight JSON model
     """
-    import pickle
-    
     # Load the scikit-learn model
     with open(sklearn_model_path, 'rb') as f:
         sklearn_data = pickle.load(f)
@@ -142,13 +144,16 @@ def convert_sklearn_model_to_lightweight(sklearn_model_path, output_path):
 
 
 if __name__ == '__main__':
-    # Example: Convert the existing model
+    # Convert the existing model to lightweight format
     import sys
     
     if len(sys.argv) > 1 and sys.argv[1] == 'convert':
-        convert_sklearn_model_to_lightweight(
-            'model/house_price_model.pkl',
-            'model/house_price_model.json'
-        )
+        # Allow custom paths via command line arguments
+        sklearn_path = sys.argv[2] if len(sys.argv) > 2 else 'model/house_price_model.pkl'
+        output_path = sys.argv[3] if len(sys.argv) > 3 else 'model/house_price_model.json'
+        
+        convert_sklearn_model_to_lightweight(sklearn_path, output_path)
     else:
-        print("Usage: python lightweight_model.py convert")
+        print("Usage: python lightweight_model.py convert [sklearn_model_path] [output_path]")
+        print("Example: python lightweight_model.py convert")
+        print("Example: python lightweight_model.py convert model/my_model.pkl model/my_model.json")
