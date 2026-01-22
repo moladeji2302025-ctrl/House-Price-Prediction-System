@@ -261,7 +261,7 @@
             {% if prediction %}
             <div class="result">
                 <h2>Predicted House Price</h2>
-                <div class="price">${{ "%.2f"|format(prediction)|replace(",", "") }}</div>
+                <div class="price">${{ "{:,.2f}".format(prediction) }}</div>
                 <div class="details">
                     <h3 style="margin-bottom: 15px;">Input Details:</h3>
                     {% if input_values %}
