@@ -1,0 +1,36 @@
+# Exclude development and training files from deployment
+model/model_building.ipynb
+model/model_development.py
+model/house_price_model.pkl
+requirements-dev.txt
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Git
+.git/
+.gitignore
+
+# Documentation (optional - can keep README if you want)
+# README.md
+
+# Other
+.DS_Store
+*.log

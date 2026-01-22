@@ -3,23 +3,21 @@ Flask Web Application for House Price Prediction
 """
 
 from flask import Flask, render_template, request, jsonify
-import pickle
 import numpy as np
 import os
+from lightweight_model import load_lightweight_model
 
 app = Flask(__name__)
 
 # Load the trained model
-MODEL_PATH = 'model/house_price_model.pkl'
+MODEL_PATH = 'model/house_price_model.json'
 
 def load_model():
     """Load the trained model from disk."""
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Please train the model first.")
     
-    with open(MODEL_PATH, 'rb') as f:
-        model_data = pickle.load(f)
-    
+    model_data = load_lightweight_model(MODEL_PATH)
     return model_data['model'], model_data['scaler'], model_data['feature_columns']
 
 # Load model at startup

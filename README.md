@@ -22,13 +22,17 @@ House-Price-Prediction-System/
 ├── model/
 │   ├── model_building.ipynb       # Jupyter notebook for model development
 │   ├── model_development.py       # Python script for model training
-│   └── house_price_model.pkl      # Trained model (generated)
+│   ├── house_price_model.pkl      # Trained model in scikit-learn format (for training)
+│   └── house_price_model.json     # Lightweight model for deployment (generated)
 ├── templates/
 │   └── index.html                 # Web interface
 ├── static/                        # (Optional) CSS/JS files
 ├── app.py                         # Flask web application
-├── requirements.txt               # Python dependencies
+├── lightweight_model.py           # Lightweight model implementation (no scikit-learn)
+├── requirements.txt               # Runtime dependencies (minimal for deployment)
+├── requirements-dev.txt           # Development and training dependencies
 ├── vercel.json                    # Vercel deployment configuration
+├── .vercelignore                  # Files to exclude from deployment
 ├── HousePrice_hosted_webGUI_link.txt  # Deployment details
 └── README.md                      # Project documentation
 ```
@@ -49,22 +53,35 @@ House-Price-Prediction-System/
    ```
 
 2. **Install dependencies**
+   
+   For development and training:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+   
+   For production/deployment only:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Train the model**
+3. **Train the model** (if not already trained)
    ```bash
    python model/model_development.py
    ```
    This will generate `model/house_price_model.pkl`
 
-4. **Run the application**
+4. **Convert model to lightweight format** (for deployment)
+   ```bash
+   python lightweight_model.py convert
+   ```
+   This will generate `model/house_price_model.json` - a lightweight version without scikit-learn dependencies
+
+5. **Run the application**
    ```bash
    python app.py
    ```
 
-5. **Access the web interface**
+6. **Access the web interface**
    Open your browser and navigate to: `http://localhost:5000`
 
 ## 📊 Model Development
@@ -88,12 +105,24 @@ The model is developed using the following steps:
    - R² Score
 
 4. **Model Persistence**
-   - Saved using Python's pickle module
-   - Includes model, scaler, and feature columns
+   - Development: Saved using Python's pickle module (scikit-learn format)
+   - Production: Converted to lightweight JSON format
+   - Includes model coefficients, scaler parameters, and feature columns
+   - JSON format enables deployment without scikit-learn dependencies
 
 ## 🌐 Deployment
 
 ### Vercel Deployment
+
+This project is optimized for Vercel's serverless function deployment with a total size under 250MB.
+
+**Optimization Details:**
+- **Runtime dependencies** (`requirements.txt`): Only Flask, numpy, and Werkzeug (~80MB)
+- **Lightweight model format**: JSON-based model without scikit-learn dependencies
+- **Excluded files** (`.vercelignore`): Training scripts, notebooks, and development dependencies
+- **Development dependencies** (`requirements-dev.txt`): Full ML stack for model training
+
+**Steps to deploy:**
 
 1. **Install Vercel CLI**
    ```bash
@@ -112,6 +141,8 @@ The model is developed using the following steps:
 
 4. **Access your deployed app**
    The deployment URL will be displayed in the terminal
+
+**Note:** The deployment uses the lightweight `house_price_model.json` file instead of the pickle file to avoid including scikit-learn in the serverless function.
 
 ## 💻 Usage
 
@@ -148,10 +179,12 @@ curl -X POST http://localhost:5000/api/predict \
 ## 🔧 Technologies Used
 
 - **Backend**: Flask
-- **Machine Learning**: scikit-learn
-- **Data Processing**: pandas, numpy
-- **Model Persistence**: pickle
-- **Deployment**: Vercel
+- **Machine Learning**: scikit-learn (training only)
+- **Data Processing**: pandas (training only), numpy (runtime)
+- **Model Persistence**: 
+  - Training: pickle (scikit-learn format)
+  - Deployment: JSON (lightweight format)
+- **Deployment**: Vercel (serverless functions)
 - **Frontend**: HTML5, CSS3
 
 ## 📈 Model Performance
